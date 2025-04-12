@@ -7,6 +7,7 @@ class AdvertisementStatusChoices(models.TextChoices):
 
     OPEN = "OPEN", "Открыто"
     CLOSED = "CLOSED", "Закрыто"
+    DRAFT = "DRAFT", "Черновик"
 
 
 
@@ -25,12 +26,3 @@ class Advertisement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def clean(self):
-        """Валидация: проверяем количество открытых объявлений."""
-        if self.status == AdvertisementStatusChoices.OPEN:
-            open_ads_count = Advertisement.objects.filter(
-                creator=self.creator,
-                status=AdvertisementStatusChoices.OPEN
-            ).count()
-            if open_ads_count >= 10:
-                raise ValidationError("У вас уже есть 10 открытых объявлений.")
